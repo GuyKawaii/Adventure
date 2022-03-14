@@ -24,7 +24,9 @@ public class Game {
 		Room r8 = new Room("r8", "");
 		Room r9 = new Room("r9", "");
 		currentRoom = r1;
-		
+
+
+		Dette er en test
 		
 		// connect room (might have connections done from previous room)
 		// r1
