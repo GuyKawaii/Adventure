@@ -1,8 +1,5 @@
 public class Room {
 	String name;
-	
-	
-	
 	String description;
 	// rooms relative to given room
 	Room north;
@@ -17,6 +14,7 @@ public class Room {
 	
 	Room(String name, String description) {
 		setName(name);
+		setDescription(description);
 		north = null;
 		south = null;
 		east = null;
@@ -64,10 +62,11 @@ public class Room {
 	}
 	
 	public void setNorthSouthWestEast(Room north, Room south, Room west, Room east) {
-		setSouth(south);
+		// Parameter order important! - assigning in given order
 		setNorth(north);
-		setEast(west);
-		setWest(north);
+		setSouth(south);
+		setEast(east);
+		setWest(west);
 	}
 	
 	public String getName() {
