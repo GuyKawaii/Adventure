@@ -20,7 +20,7 @@ public class Game {
 	
 	public void run() {
 		// init rooms
-		Room r1 = new Room("r1", "Forest entrance");
+		Room r1 = new Room("r1 Forest entrance", " you have ");
 		Room r2 = new Room("r2 The green forest", "");
 		Room r3 = new Room("r3 the outer part of the green forest", "");
 		Room r4 = new Room("r4 the entrance to the black forest", "");
@@ -82,6 +82,7 @@ public class Game {
 							enter choice:\040""",
 					currentRoom.getName());
 			
+			System.out.println("enter [n]orth, [s]outh [e]ast [w]est to move");
 			userChoice = in.nextLine().toLowerCase();
 			
 			switch (userChoice) {
