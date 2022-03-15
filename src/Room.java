@@ -7,11 +7,7 @@ public class Room {
 	Room east;
 	Room west;
 	
-	
-	public String getWelcomeMessage() {
-		return "Welcome to Cave of Cud";
-	}
-	
+
 	Room(String name, String description) {
 		setName(name);
 		setDescription(description);
