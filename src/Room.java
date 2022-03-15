@@ -11,10 +11,18 @@ public class Room {
 	Room(String name, String description) {
 		setName(name);
 		setDescription(description);
-		north = null;
-		south = null;
-		east = null;
-		west = null;
+		setNorth(null);
+		setSouth(null);
+		setEast(null);
+		setWest(null);
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public String getDescription() {
@@ -43,33 +51,26 @@ public class Room {
 	
 	public void setNorth(Room north) {
 		this.north = north;
+		if (north != null)
+			north.south = this;
 	}
 	
 	public void setSouth(Room south) {
 		this.south = south;
+		if (south != null)
+			south.north = this;
 	}
 	
 	public void setEast(Room east) {
 		this.east = east;
+		if (east != null)
+			east.west = this;
 	}
 	
 	public void setWest(Room west) {
 		this.west = west;
+		if (west != null)
+			west.east = this;
 	}
 	
-	public void setNorthSouthWestEast(Room north, Room south, Room west, Room east) {
-		// Parameter order important! - assigning in given order
-		setNorth(north);
-		setSouth(south);
-		setEast(east);
-		setWest(west);
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
 }
