@@ -1,13 +1,13 @@
 public class Room {
-	String name;
-	String description;
-	// rooms relative to given room
-	Room north;
-	Room south;
-	Room east;
-	Room west;
+	private String name;
+	private String description;
 	
-
+	// rooms relative to given room
+	private Room north;
+	private Room south;
+	private Room east;
+	private Room west;
+	
 	Room(String name, String description) {
 		setName(name);
 		setDescription(description);
