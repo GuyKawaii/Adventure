@@ -5,22 +5,7 @@ public class Adventure {
 	Room currentRoom;
 	String userChoice;
 	Scanner in = new Scanner(System.in);
-	
-	void printControls() {
-		System.out.println("""
-				
-				CONTROLS
-				Navigate around using the four cardinal directions:
-				- [n] or [north] or [go north] to go north
-				- [s] or [south] or [go south] to go south
-				- [w] or [west]  or [go west]  to go west
-				- [e] or [east]  or [go east]  to go east
-				
-				Other actions:
-				- [l] or [look] to look around you
-				- [h] or [help] to print help screen
-				- [exit]        to exit game""");
-	}
+
 	
 	public Room selectDirection(Room currentRoom, Room nextRoom) {
 		if (nextRoom == null) {
@@ -49,7 +34,7 @@ public class Adventure {
 		currentRoom = r1;
 		
 		// Connect rooms (both ways)
-		// Rows connect  (south to east iteration)
+		// Rows connect  (west to east iteration)
 		r1.setEast(r2);
 		r2.setEast(r3);
 		r7.setEast(r8);
@@ -60,6 +45,22 @@ public class Adventure {
 		r5.setSouth(r8);
 		r3.setSouth(r6);
 		r6.setSouth(r9);
+	}
+	
+	void printControls() {
+		System.out.println("""
+				
+				CONTROLS
+				Navigate around using the four cardinal directions:
+				- [n] or [north] or [go north] to go north
+				- [s] or [south] or [go south] to go south
+				- [w] or [west]  or [go west]  to go west
+				- [e] or [east]  or [go east]  to go east
+				
+				Other actions:
+				- [l] or [look] to look around you
+				- [h] or [help] to print help screen
+				- [exit]        to exit game""");
 	}
 	
 	public void run() {
