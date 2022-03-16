@@ -3,7 +3,7 @@ package adventure;
 public class Map {
 	private Room startRoom;
 	
-	Map() {
+	public Map() {
 		createRooms();
 	}
 	
