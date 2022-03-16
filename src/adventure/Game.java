@@ -1,10 +1,14 @@
+package adventure;
+
 import java.util.Scanner;
 
-public class Adventure {
+public class Game {
 	boolean isPlaying = true;
 	Room currentRoom;
 	String userChoice;
 	Scanner in = new Scanner(System.in);
+	Map map = new Map();
+	UI ui = new UI();
 
 	
 	public Room selectDirection(Room currentRoom, Room nextRoom) {
@@ -64,7 +68,11 @@ public class Adventure {
 	}
 	
 	public void run() {
-		setupGameState();
+		// Setup gameState
+		map.createRooms();
+		currentRoom = map.getStartRoom();
+		
+		
 		
 		// Print game intro info
 		System.out.print("""
@@ -108,6 +116,6 @@ public class Adventure {
 	}
 	
 	public static void main(String[] args) {
-		new Adventure().run();
+		new Game().run();
 	}
 }
