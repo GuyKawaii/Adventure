@@ -1,9 +1,8 @@
 package adventure;
 
 public enum Direction {
-    NORTH,
-    SOUTH,
-    WEST,
-    EAST,
-
+	NORTH,
+	SOUTH,
+	EAST,
+	WEST
 }

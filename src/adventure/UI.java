@@ -5,6 +5,14 @@ import java.util.Scanner;
 public class UI {
 	Scanner in = new Scanner(System.in);
 	
+	void printGameIntro() {
+		System.out.print("""
+                Welcome to the forest, an adventure awaits!
+                - Enter to continue:""");
+		in.nextLine();
+		printControls();
+	}
+	
 	void printControls() {
 		System.out.println("""
 				
@@ -20,6 +28,9 @@ public class UI {
 				- [h] or [help] to print help screen
 				- [exit]        to exit game""");
 	}
+	
+
+	
 	
 	
 }
