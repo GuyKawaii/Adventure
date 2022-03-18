@@ -1,67 +1,97 @@
 package adventure;
 
-import java.util.Scanner;
-
 public class Game {
 	private boolean isPlaying = true;
-	private final Scanner in = new Scanner(System.in);
-	private final Map map;
-	private final UI ui;
-	private final Player player;
+	private Map map;
+	private UI ui;
+	private Player player;
 	
 	public Game() {
 		// setup gateState
 		ui = new UI();
 		map = new Map();
-		map.createRooms();
 		player = new Player(map.getStartRoom());
 		
-		// print info
+		// print
 		ui.printGameIntro();
 	}
 	
 	public void run() {
-		String userChoice;
+		String[] userCommandElements;
+		String command;
+		String item;
 		
 		// Main game loop
 		do {
-			System.out.printf("""
-							
-							[h] for help - current room [%s]
-							enter choice:\040""",
-					player.getCurrentRoom().getName());
-			userChoice = in.nextLine().toLowerCase();
+			ui.printUserSelect(player);
 			
-			switch (userChoice) {
-				// Movement choices
+			// split command
+			userCommandElements = ui.getUserCommandElements();
+			command = userCommandElements[0];
+			item = userCommandElements[1];
+			
+			switch (command) {
+				// Movement
 				case "n", "north", "go north" -> selectDirection(player, Direction.NORTH);
 				case "s", "south", "go south" -> selectDirection(player, Direction.SOUTH);
 				case "w", "west", "go west" -> selectDirection(player, Direction.WEST);
 				case "e", "east", "go east" -> selectDirection(player, Direction.EAST);
-				// Other actions(also always available)
+				// Other actions
+				case "t", "take" -> takeItem(player, item);
+				case "d", "drop" -> dropItem(player, item);
+				case "i", "inventory" -> ui.printInventory(player);
 				case "h", "help" -> ui.printControls();
-				case "l", "look" -> System.out.printf("""
-								- You are in room [%s] "%s"
-								""",
-						player.getCurrentRoom().getName(),
-						player.getCurrentRoom().getDescription());
+				case "l", "look" -> ui.printRoomDescription(player.getCurrentRoom(), "your inside");
 				case "exit" -> isPlaying = false;
-				default -> System.out.println("invalid user input");
+				default -> ui.printInvalidUserInput();
 			}
 			
 		} while (isPlaying);
 	}
 	
 	public void selectDirection(Player player, Direction direction) {
-		boolean couldMove = player.movement(direction);
+		boolean playerMoved = player.movement(direction);
 		
-		if (!couldMove) {
-			System.out.println("- You cannot go that way [no room entry in that direction]");
-		} else {
-			System.out.printf("- Entering [%S] \"%s\"\n",
-					player.getCurrentRoom().getName(),
-					player.getCurrentRoom().getDescription());
+		if (playerMoved)
+			ui.printRoomDescription(player.getCurrentRoom(), "entering");
+		else
+			ui.printInvalidDirection();
+	}
+	
+	public void takeItem(Player player, String itemName) {
+		Room currentRoom = player.getCurrentRoom();
+		
+		if (itemName == null) {
+			ui.printItemNotSpecified();
+			return;
 		}
+		
+		for (Item item : currentRoom.getItems()) {
+			if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
+				player.takeItem(item);
+				ui.printAddInventory();
+				return;
+			}
+		}
+		
+		ui.printItemNotInRoom(itemName);
+	}
+	
+	public void dropItem(Player player, String itemName) {
+		if (itemName == null) {
+			ui.printItemNotSpecified();
+			return;
+		}
+		
+		for (Item item : player.getInventory()) {
+			if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
+				player.dropItem(item);
+				ui.printRemoveInventory();
+				return;
+			}
+		}
+		
+		ui.printItemNotInRoom(itemName);
 	}
 	
 }
