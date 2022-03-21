@@ -48,6 +48,7 @@ public class UI {
     }
 
     public void printRoomDescription(Room room, String preamble) {
+        // preamble is just some introduction text
         System.out.printf("- %s [%s] \"%s\"\n",
                 preamble,
                 room.getName(),
@@ -68,7 +69,6 @@ public class UI {
 
         return userActions;
     }
-
 
     public void printItemNotSpecified() {
         System.out.println("- you need to specify an object by name to take that action");

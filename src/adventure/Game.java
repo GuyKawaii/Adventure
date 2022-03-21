@@ -66,15 +66,11 @@ public class Game {
 			return;
 		}
 		
-		for (Item item : currentRoom.getItems()) {
-			if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
-				player.takeItem(item);
-				ui.printAddInventory();
-				return;
-			}
-		}
-		
-		ui.printItemNotInRoom(itemName);
+		Item removedRoomItem = currentRoom.takeItemByName(itemName);
+		if (removedRoomItem == null)
+			ui.printItemNotInRoom(itemName);
+		else
+			player.addItem(removedRoomItem);
 	}
 	
 	public void dropItem(Player player, String itemName) {
@@ -83,15 +79,11 @@ public class Game {
 			return;
 		}
 		
-		for (Item item : player.getInventory()) {
-			if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
-				player.dropItem(item);
-				ui.printRemoveInventory();
-				return;
-			}
-		}
-		
-		ui.printItemNotInRoom(itemName);
+		Item removedPlayerItem = player.takeItemByName(itemName);
+		if (removedPlayerItem == null)
+			ui.printItemNotInRoom(itemName);
+		else
+			player.getCurrentRoom().addItem(removedPlayerItem);
 	}
 	
 }
