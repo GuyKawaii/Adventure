@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class Player {
   private int healthPoints;
-  private Room            currentRoom;
+  private Room currentRoom;
   private ArrayList<Item> inventory;
   
   public Player(Room startRoom) {
@@ -53,28 +53,8 @@ public class Player {
     currentRoom.removeItem(item);
     addItem(item);
   }
-
-  public eatAction eat (String foodName) {
-    Item itemEat;
-
-    itemEat = takeItemByName(foodName);
-    if (itemEat == null) {
-      itemEat = currentRoom.takeItemByName(foodName);
-    }
-    if(itemEat == null) {
-      return eatAction.NOT_ITEM;
-    }
-    else if(itemEat instanceof Food) {
-      healthPoints = healthPoints + ((Food) itemEat).getHealthPoints();
-      return eatAction.FOOD_ITEM;
-
-    }
-    return eatAction.NOT_FOOD;
-
-
-  }
   
-  public Item takeItemByName(String itemName) {
+  public Item takeItem(String itemName) {
     // removes item from player and returns it
     for (Item item : inventory) {
       if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
@@ -85,8 +65,39 @@ public class Player {
     
     return null;
   }
-
-  public int getHealthPoints(){
+  
+  public eatAction eat(String foodName) {
+    Item itemEat;
+    boolean itemEatFromInventory = true;
+    
+    itemEat = takeItem(foodName); // take from player inventory
+    if (itemEat == null) {
+      itemEat = currentRoom.takeItem(foodName);
+      itemEatFromInventory = false;
+    }
+    
+    // Item checks
+    if (itemEat == null) {
+      return eatAction.NOT_ITEM;
+      
+    } else if (itemEat instanceof Food) {
+      healthPoints = healthPoints + ((Food) itemEat).getHealthPoints();
+      return eatAction.FOOD_ITEM;
+    
+    } else {
+      
+      // return non-food items to their original place
+      if (itemEatFromInventory)
+        inventory.add(itemEat);
+      else
+        currentRoom.addItem(itemEat);
+      
+      return eatAction.NOT_FOOD;
+    }
+  }
+  
+  
+  public int getHealthPoints() {
     return healthPoints;
   }
   

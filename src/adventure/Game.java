@@ -68,7 +68,7 @@ public class Game {
 			return;
 		}
 		
-		Item removedRoomItem = currentRoom.takeItemByName(itemName);
+		Item removedRoomItem = currentRoom.takeItem(itemName);
 		if (removedRoomItem == null)
 			ui.printItemNotInRoom(itemName);
 		else
@@ -82,7 +82,7 @@ public class Game {
 			return;
 		}
 		
-		Item removedPlayerItem = player.takeItemByName(itemName);
+		Item removedPlayerItem = player.takeItem(itemName);
 		if (removedPlayerItem == null)
 			ui.printItemNotInRoom(itemName);
 		else

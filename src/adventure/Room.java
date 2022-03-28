@@ -23,7 +23,7 @@ public class Room {
         items = new ArrayList<>();
     }
     
-    public Item takeItemByName(String itemName) {
+    public Item takeItem(String itemName) {
         // removes item from room and returns it
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
