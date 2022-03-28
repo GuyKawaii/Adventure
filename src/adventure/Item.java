@@ -1,12 +1,14 @@
 package adventure;
 
+import static adventure.Color.*;
+
 public class Item {
     private String name;
-    private String longName;
+    private String description;
 
-    public Item(String name, String longName) {
+    public Item(String name, String description) {
         setName(name);
-        setLongName(longName);
+        setDescription(description);
     }
 
     public void setName(String name) {
@@ -17,17 +19,17 @@ public class Item {
         return name;
     }
 
-    public String getLongName() {
-        return longName;
+    public String getDescription() {
+        return description;
     }
 
-    public void setLongName(String longName) {
-        this.longName = longName;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override
     public String toString() {
-        return longName;
+        return String.format("%s%s%s: %s", ANSI_BLUE, name, ANSI_RESET, description);
     }
 
 }

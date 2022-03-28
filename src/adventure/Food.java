@@ -1,4 +1,7 @@
 package adventure;
+
+import static adventure.Color.*;
+
 public class Food extends Item{
     private int healthPoints;
 
@@ -13,6 +16,11 @@ public class Food extends Item{
 
     public int getHealthPoints() {
         return healthPoints;
+    }
+    
+    @Override
+    public String toString() {
+        return String.format("%s%s%s: %s %s(%+d HP)%s", ANSI_GREEN, getName(), ANSI_RESET, getDescription(), ANSI_YELLOW, getHealthPoints(), ANSI_RESET);
     }
 
 

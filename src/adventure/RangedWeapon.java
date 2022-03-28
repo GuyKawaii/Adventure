@@ -1,5 +1,7 @@
 package adventure;
 
+import static adventure.Color.*;
+
 public class RangedWeapon extends Weapon {
   int ammunition;
   
@@ -21,5 +23,10 @@ public class RangedWeapon extends Weapon {
   @Override
   public boolean canAttack(){
     return ammunition > 0;
+  }
+  
+  @Override
+  public String toString() {
+    return String.format("%s%s%s: %s %s(%s DMG, %s AMMO)%s", ANSI_RED, getName(), ANSI_RESET, getDescription(), ANSI_YELLOW, damage, ammunition, ANSI_RESET);
   }
 }

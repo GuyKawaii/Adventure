@@ -2,6 +2,8 @@ package adventure;
 
 import java.util.ArrayList;
 
+import static adventure.Action.*;
+
 public class Player {
   private int healthPoints;
   private Room currentRoom;
@@ -33,8 +35,65 @@ public class Player {
     return true;
   }
   
-  public Room getCurrentRoom() {
-    return currentRoom;
+  public Action equip(String weaponName) {
+    Item item;
+    boolean itemInsideInventory = true;
+    
+    // find item in inventory
+    item = findItem(weaponName);
+    // find item in current room
+    if (item == null) {
+      item = currentRoom.findItem(weaponName);
+      itemInsideInventory = false;
+    }
+    
+    // Item checks
+    if (item instanceof Weapon) {
+      
+      // swap old and new equipped weapon
+      if (equippedWeapon != null)
+        inventory.add(equippedWeapon);
+      equippedWeapon = (Weapon) item;
+      
+      // remove item from location
+      if (itemInsideInventory) inventory.remove(item);
+      else currentRoom.removeItem(item);
+      
+      return EQUIP_ITEM;
+      
+    } else if (item == null)
+      return CANT_FIND_ITEM;
+    else // not weapon item
+      return CANT_EQUIP_ITEM;
+  }
+  
+  public Action eat(String foodName) {
+    // Gives HP and removes item after use
+    Item item;
+    boolean itemInsideInventory = true;
+    
+    // find item in inventory
+    item = findItem(foodName);
+    // find item in current room
+    if (item == null) {
+      item = currentRoom.findItem(foodName);
+      itemInsideInventory = false;
+    }
+    
+    // Item checks
+    if (item instanceof Food) {
+      
+      // remove item from location
+      if (itemInsideInventory) inventory.remove(item);
+      else currentRoom.removeItem(item);
+      
+      addHealthPoints(((Food) item).getHealthPoints());
+      return EAT_ITEM;
+      
+    } else if (item == null)
+      return CANT_FIND_ITEM;
+    else // not food item
+      return CANT_EAT_ITEM;
   }
   
   public void addItem(Item item) {
@@ -45,29 +104,34 @@ public class Player {
     inventory.remove(item);
   }
   
-  
   public ArrayList<Item> getInventory() {
     return inventory;
   }
-
-  public void setEquippedWeapon(Weapon equippedWeapon){
-    this.equippedWeapon = equippedWeapon;
+  
+  public void setEquippedWeapon(Weapon weapon) {
+    this.equippedWeapon = weapon;
   }
-
-  public Weapon getEquippedWeapon() {
-    return equippedWeapon;
-  }
-
+  
   public void takeItem(Item item) {
     currentRoom.removeItem(item);
     addItem(item);
   }
   
-  public Item takeItem(String itemName) {
-    // removes item from player and returns it
+  public void dropItem(Item item) {
+    removeItem(item);
+    currentRoom.addItem(item);
+  }
+  
+  public Item findItem(String itemName) {
+    // find item instance by name
+    
     for (Item item : inventory) {
-      if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
-        inventory.remove(item);
+      String name = item.getName();
+      String description = item.getDescription();
+      // find item by "name" or "description" or "name description"
+      if (itemName.equalsIgnoreCase(name) ||
+          itemName.equalsIgnoreCase(description) ||
+          itemName.equalsIgnoreCase(name + " " + description)) {
         return item;
       }
     }
@@ -75,75 +139,32 @@ public class Player {
     return null;
   }
   
-  public eatAction eat(String foodName) {
-    Item itemEat;
-    boolean itemEatFromInventory = true;
-    
-    itemEat = takeItem(foodName); // take from player inventory
-    if (itemEat == null) {
-      itemEat = currentRoom.takeItem(foodName);
-      itemEatFromInventory = false;
-    }
-    
-    // Item checks
-    if (itemEat == null) {
-      return eatAction.IS_NOT_AN_ITEM;
-      
-    } else if (itemEat instanceof Food) {
-      healthPoints = healthPoints + ((Food) itemEat).getHealthPoints();
-      return eatAction.FOOD_ITEM;
-    
-    } else {
-      
-      // return non-food items to their original place
-      if (itemEatFromInventory)
-        inventory.add(itemEat);
-      else
-        currentRoom.addItem(itemEat);
-      
-      return eatAction.NOT_A_FOOD_ITEM;
-    }
+  public Weapon getEquippedWeapon() {
+    return equippedWeapon;
   }
-  
   
   public int getHealthPoints() {
     return healthPoints;
   }
   
-  public void dropItem(Item item) {
-    removeItem(item);
-    currentRoom.addItem(item);
-  }
-
-  public EquipWeapon equipWeapon(String weaponName) {
-    Item itemWeapon;
-    boolean itemWeaponFromInventory = true;
-
-    itemWeapon = takeItem(weaponName); // take from player inventory
-    if (itemWeapon == null) {
-      itemWeapon = currentRoom.takeItem(weaponName);
-      itemWeaponFromInventory = false;
-    }
-
-    // Item checks
-    if (itemWeapon == null) {
-      return EquipWeapon.there_isnt_an_item;
-
-    } else if (itemWeapon instanceof Weapon) {
-      inventory.add(itemWeapon);
-      equippedWeapon = (Weapon) itemWeapon;
-      return EquipWeapon.is_equipped;
-
-    } else {
-
-      // return non-food items to their original place
-      if (itemWeaponFromInventory)
-        inventory.add(itemWeapon);
-      else
-        currentRoom.addItem(itemWeapon);
-
-      return EquipWeapon.is_not_equipped;
-    }
+  public void addHealthPoints(int points) {
+    if (healthPoints + points < 0) healthPoints = 0;
+    else healthPoints += points;
   }
   
+  public Room getCurrentRoom() {
+    return currentRoom;
+  }
+
+//    public Item takeItem(String itemName) {
+//    // removes item from player and returns it
+//    for (Item item : inventory) {
+//      if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
+//        inventory.remove(item);
+//        return item;
+//      }
+//    }
+//
+//    return null;
+//  }
 }

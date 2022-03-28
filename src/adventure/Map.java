@@ -39,20 +39,19 @@ public class Map {
 
 
         // Create items
-        Item item1 = new Item("GOLD NUGGET", "GOLD NUGGET: gold oy vay");
-        Item item2 = new Item("KEY", "KEY: rusty and old");
-        Item item3 = new Item("KEY", "KEY: rusty and old");
+        Item item1 = new Item("GOLD NUGGET", "gold oy vay");
+        Item item2 = new Item("KEY", "rusty and old");
+        Item item3 = new Item("KEY", "rusty and old");
 
         //create Food
-        Item food1 = new Food("pie", "Strawberry pie", 10);
-        Item food2 = new Food("Chocolate", "Chocolate Bar", 15 );
+        Item food1 = new Food("PIE", "Strawberry pie", 10);
+        Item food2 = new Food("CHOCOLATE", "Chocolate Bar", 15 );
         
         // create weapons
         Item weapon1 = new RangedWeapon("PISTOL", "GLOCK", 5, 8);
         Item weapon2 = new RangedWeapon("BOW", "LONG BOW", 8, 4);
-        Item weapon3 = new MeleeWeapon("DAGGER", "DAGGER: sharp and short", 3);
-
-
+        Item weapon3 = new MeleeWeapon("DAGGER", "sharp and short", 3);
+        
         // Add items
         r1.addItem(item1);
         r1.addItem(item2);
