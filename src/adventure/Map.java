@@ -44,11 +44,18 @@ public class Map {
         Item item3 = new Item("KEY", "KEY: rusty and old");
         Item item4 = new Item("KEY", "KEY: rusty and old");
 
+        //create Food
+        Item food1 = new Food("pie", "Strawberry pie", 10);
+        Item food2 = new Food("Chocolate", "Chocolate Bar", 15 );
+
+
         // Add items
         r1.addItem(item1);
         r1.addItem(item2);
         r1.addItem(item3);
         r1.addItem(item4);
+        r1.addItem(food1);
+        r1.addItem(food2);
     }
 
 }

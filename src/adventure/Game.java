@@ -42,6 +42,8 @@ public class Game {
 				case "i", "inventory" -> ui.printInventory(player);
 				case "h", "help" -> ui.printControls();
 				case "l", "look" -> ui.printRoomDescription(player.getCurrentRoom(), "your inside");
+				case "health", "hp", "healthPoints" -> ui.printHealthPoints(player);
+				case "eat" -> itemAte(player, item);
 				case "exit" -> isPlaying = false;
 				default -> ui.printInvalidUserInput();
 			}
@@ -71,6 +73,7 @@ public class Game {
 			ui.printItemNotInRoom(itemName);
 		else
 			player.addItem(removedRoomItem);
+		ui.printAddInventory();
 	}
 	
 	public void dropItem(Player player, String itemName) {
@@ -84,6 +87,16 @@ public class Game {
 			ui.printItemNotInRoom(itemName);
 		else
 			player.getCurrentRoom().addItem(removedPlayerItem);
+		ui.printRemoveInventory();
+	}
+
+	public void itemAte(Player player, String itemName) {
+		if (itemName == null) {
+			ui.printItemNotSpecified();
+			return;
+		}
+		eatAction action = player.eat(itemName);
+		ui.printCanEat(player, itemName, action);
 	}
 	
 }

@@ -3,12 +3,14 @@ package adventure;
 import java.util.ArrayList;
 
 public class Player {
+  private int healthPoints;
   private Room            currentRoom;
   private ArrayList<Item> inventory;
   
   public Player(Room startRoom) {
     currentRoom = startRoom;
     inventory = new ArrayList<>();
+    healthPoints = 100;
   }
   
   public boolean movement(Direction direction) {
@@ -51,6 +53,26 @@ public class Player {
     currentRoom.removeItem(item);
     addItem(item);
   }
+
+  public eatAction eat (String foodName) {
+    Item itemEat;
+
+    itemEat = takeItemByName(foodName);
+    if (itemEat == null) {
+      itemEat = currentRoom.takeItemByName(foodName);
+    }
+    if(itemEat == null) {
+      return eatAction.NOT_ITEM;
+    }
+    else if(itemEat instanceof Food) {
+      healthPoints = healthPoints + ((Food) itemEat).getHealthPoints();
+      return eatAction.FOOD_ITEM;
+
+    }
+    return eatAction.NOT_FOOD;
+
+
+  }
   
   public Item takeItemByName(String itemName) {
     // removes item from player and returns it
@@ -62,6 +84,10 @@ public class Player {
     }
     
     return null;
+  }
+
+  public int getHealthPoints(){
+    return healthPoints;
   }
   
   public void dropItem(Item item) {

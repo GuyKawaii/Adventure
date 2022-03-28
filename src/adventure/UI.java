@@ -31,6 +31,37 @@ public class UI {
                 - [h]        or [help]        = print help screen
                 - [exit]                      = exit game""");
     }
+    public void printHealthPoints(Player player) {
+        int healthPoints = player.getHealthPoints();
+        System.out.printf("Players HP is %s \u2764 \n", healthPoints);
+        if (healthPoints <= 33){
+            System.out.println("Your health is critical");
+        }
+        else if (healthPoints <= 66) {
+            System.out.println("You have taken som damage, watch your healthpoints!");
+        }
+        else if (healthPoints <= 99) {
+            System.out.println("You have taken minimal damage");
+        }
+        else {
+            System.out.println("You have taken no damage");
+        }
+    }
+
+    public void printCanEat(Player player,String foodName, eatAction action) {
+        if (action == eatAction.FOOD_ITEM) {
+            System.out.printf("""
+        you have ate: %s
+        Your HealthPoint is now %s
+        """,foodName, player.getHealthPoints());
+        } else if (action == eatAction.NOT_FOOD){
+            System.out.printf("You can not eat %s item \n" ,foodName );
+        }
+        else {
+            System.out.println("Could not find Item");   //(action == eatAction.NOT_ITEM)
+        }
+
+    }
 
     public void printInventory(Player player) {
         if (player.getInventory().isEmpty())
