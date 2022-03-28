@@ -6,6 +6,7 @@ public class Player {
   private int healthPoints;
   private Room currentRoom;
   private ArrayList<Item> inventory;
+  private Weapon equippedWeapon;
   
   public Player(Room startRoom) {
     currentRoom = startRoom;
@@ -48,7 +49,15 @@ public class Player {
   public ArrayList<Item> getInventory() {
     return inventory;
   }
-  
+
+  public void setEquippedWeapon(Weapon equippedWeapon){
+    this.equippedWeapon = equippedWeapon;
+  }
+
+  public Weapon getEquippedWeapon() {
+    return equippedWeapon;
+  }
+
   public void takeItem(Item item) {
     currentRoom.removeItem(item);
     addItem(item);
@@ -78,7 +87,7 @@ public class Player {
     
     // Item checks
     if (itemEat == null) {
-      return eatAction.NOT_ITEM;
+      return eatAction.IS_NOT_AN_ITEM;
       
     } else if (itemEat instanceof Food) {
       healthPoints = healthPoints + ((Food) itemEat).getHealthPoints();
@@ -92,7 +101,7 @@ public class Player {
       else
         currentRoom.addItem(itemEat);
       
-      return eatAction.NOT_FOOD;
+      return eatAction.NOT_A_FOOD_ITEM;
     }
   }
   
@@ -104,6 +113,37 @@ public class Player {
   public void dropItem(Item item) {
     removeItem(item);
     currentRoom.addItem(item);
+  }
+
+  public EquipWeapon equipWeapon(String weaponName) {
+    Item itemWeapon;
+    boolean itemWeaponFromInventory = true;
+
+    itemWeapon = takeItem(weaponName); // take from player inventory
+    if (itemWeapon == null) {
+      itemWeapon = currentRoom.takeItem(weaponName);
+      itemWeaponFromInventory = false;
+    }
+
+    // Item checks
+    if (itemWeapon == null) {
+      return EquipWeapon.there_isnt_an_item;
+
+    } else if (itemWeapon instanceof Weapon) {
+      inventory.add(itemWeapon);
+      equippedWeapon = (Weapon) itemWeapon;
+      return EquipWeapon.is_equipped;
+
+    } else {
+
+      // return non-food items to their original place
+      if (itemWeaponFromInventory)
+        inventory.add(itemWeapon);
+      else
+        currentRoom.addItem(itemWeapon);
+
+      return EquipWeapon.is_not_equipped;
+    }
   }
   
 }

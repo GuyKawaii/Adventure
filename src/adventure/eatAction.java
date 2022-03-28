@@ -1,8 +1,8 @@
 package adventure;
 
 public enum eatAction {
-    NOT_ITEM,
-    NOT_FOOD,
+    IS_NOT_AN_ITEM,
+    NOT_A_FOOD_ITEM,
     FOOD_ITEM,
 
 }

@@ -17,4 +17,9 @@ public class RangedWeapon extends Weapon {
     
     return 0;
   }
+
+  @Override
+  public boolean canAttack(){
+    return ammunition > 0;
+  }
 }

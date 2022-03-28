@@ -10,4 +10,6 @@ public class MeleeWeapon extends Weapon {
   public int attack() {
     return damage;
   }
+
+
 }

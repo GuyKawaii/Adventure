@@ -11,4 +11,10 @@ public abstract class Weapon extends Item {
   public int attack() {
     return 0;
   }
+
+
+  public boolean canAttack() {
+    return true;
+
+  }
 }

@@ -48,26 +48,55 @@ public class UI {
         }
     }
 
+    public void printAttack(Player player){
+        if(player.getEquippedWeapon() == null) {
+            System.out.println("you have not equipped an weapon, you are attacking with your bare hands, you deal less damage");
+        } else if (player.getEquippedWeapon().canAttack())
+        System.out.printf("you have attacked the enemy with %s, deal %s damage", player.getEquippedWeapon(), player.getEquippedWeapon().attack());
+        else {
+            System.out.println("you have no ammunition left, you cant attack");
+        }
+    }
+
     public void printCanEat(Player player,String foodName, eatAction action) {
         if (action == eatAction.FOOD_ITEM) {
             System.out.printf("""
         you have ate: %s
         Your HealthPoint is now %s
         """,foodName, player.getHealthPoints());
-        } else if (action == eatAction.NOT_FOOD){
+        } else if (action == eatAction.NOT_A_FOOD_ITEM){
             System.out.printf("You can not eat %s item \n" ,foodName );
         }
         else {
-            System.out.println("Could not find Item");   //(action == eatAction.NOT_ITEM)
+            System.out.println("Could not find Item");   //(action == eatAction.NOT_ITEM
         }
-
     }
+
+    public void printEquipped(Player player,String weaponName, EquipWeapon action) {
+        if (action == EquipWeapon.is_equipped) {
+            System.out.printf("""
+        you have equipped: %s
+        """,weaponName);
+        } else if (action == EquipWeapon.there_isnt_an_item){
+            System.out.printf("You cannot equip %s item \n" ,weaponName);
+        }
+        else {
+            System.out.println("Could not find Item");   //(action == EquipWeapon.NOT_ITEM
+        }
+    }
+
 
     public void printInventory(Player player) {
         if (player.getInventory().isEmpty())
             System.out.println("- Inventory is empty");
         else
             System.out.printf("- Inventory %s\n", player.getInventory());
+
+        if (player.getEquippedWeapon() == null)
+            System.out.println("- No item equipped");
+        else
+            System.out.printf("- Equipped weapon %s\n", player.getEquippedWeapon());
+
     }
 
     public void printUserSelect(Player player) {

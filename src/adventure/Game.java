@@ -39,6 +39,8 @@ public class Game {
 				// Other actions
 				case "t", "take" -> takeItem(player, item);
 				case "d", "drop" -> dropItem(player, item);
+				case "equip", "eq" -> itemEquip(player, item);
+				case "attack" -> ui.printAttack(player);
 				case "i", "inventory" -> ui.printInventory(player);
 				case "h", "help" -> ui.printControls();
 				case "l", "look" -> ui.printRoomDescription(player.getCurrentRoom(), "your inside");
@@ -98,5 +100,16 @@ public class Game {
 		eatAction action = player.eat(itemName);
 		ui.printCanEat(player, itemName, action);
 	}
+
+	public void itemEquip(Player player, String itemName) {
+		if (itemName == null) {
+			ui.printItemNotSpecified();
+			return;
+		}
+		EquipWeapon action = player.equipWeapon(itemName);
+		ui.printEquipped(player, itemName, action);
+	}
+
+
 	
 }
