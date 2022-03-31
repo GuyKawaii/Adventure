@@ -1,19 +1,19 @@
 package adventure;
 
+import adventure.enum_and_color.Action;
+import adventure.enum_and_color.Direction;
+
 import java.util.ArrayList;
 
-import static adventure.Action.*;
+import static adventure.enum_and_color.Action.*;
 
-public class Player {
-  private int healthPoints;
-  private Room currentRoom;
+public class Player extends Character {
   private ArrayList<Item> inventory;
-  private Weapon equippedWeapon;
   
   public Player(Room startRoom) {
-    currentRoom = startRoom;
+    super(100);
+    setCurrentRoom(startRoom);
     inventory = new ArrayList<>();
-    healthPoints = 100;
   }
   
   public boolean movement(Direction direction) {
@@ -21,17 +21,17 @@ public class Player {
     Room nextRoom;
     
     switch (direction) {
-      case NORTH -> nextRoom = currentRoom.getNorth();
-      case SOUTH -> nextRoom = currentRoom.getSouth();
-      case EAST -> nextRoom = currentRoom.getEast();
-      case WEST -> nextRoom = currentRoom.getWest();
+      case NORTH -> nextRoom = getCurrentRoom().getNorth();
+      case SOUTH -> nextRoom = getCurrentRoom().getSouth();
+      case EAST -> nextRoom = getCurrentRoom().getEast();
+      case WEST -> nextRoom = getCurrentRoom().getWest();
       default -> throw new IllegalStateException("Unexpected value: " + direction);
     }
     
     if (nextRoom == null)
       return false;
     
-    currentRoom = nextRoom;
+    setCurrentRoom(nextRoom);
     return true;
   }
   
@@ -43,7 +43,7 @@ public class Player {
     item = findItem(weaponName);
     // find item in current room
     if (item == null) {
-      item = currentRoom.findItem(weaponName);
+      item = getCurrentRoom().findItem(weaponName);
       itemInsideInventory = false;
     }
     
@@ -51,13 +51,13 @@ public class Player {
     if (item instanceof Weapon) {
       
       // swap old and new equipped weapon
-      if (equippedWeapon != null)
-        inventory.add(equippedWeapon);
-      equippedWeapon = (Weapon) item;
+      if (getEquippedWeapon() != null)
+        inventory.add(getEquippedWeapon());
+      setEquippedWeapon((Weapon) item);
       
       // remove item from location
       if (itemInsideInventory) inventory.remove(item);
-      else currentRoom.removeItem(item);
+      else getCurrentRoom().removeItem(item);
       
       return EQUIP_ITEM;
       
@@ -76,7 +76,7 @@ public class Player {
     item = findItem(foodName);
     // find item in current room
     if (item == null) {
-      item = currentRoom.findItem(foodName);
+      item = getCurrentRoom().findItem(foodName);
       itemInsideInventory = false;
     }
     
@@ -85,7 +85,7 @@ public class Player {
       
       // remove item from location
       if (itemInsideInventory) inventory.remove(item);
-      else currentRoom.removeItem(item);
+      else getCurrentRoom().removeItem(item);
       
       addHealthPoints(((Food) item).getHealthPoints());
       return EAT_ITEM;
@@ -108,63 +108,42 @@ public class Player {
     return inventory;
   }
   
-  public void setEquippedWeapon(Weapon weapon) {
-    this.equippedWeapon = weapon;
-  }
-  
   public void takeItem(Item item) {
-    currentRoom.removeItem(item);
+    getCurrentRoom().removeItem(item);
     addItem(item);
   }
   
   public void dropItem(Item item) {
     removeItem(item);
-    currentRoom.addItem(item);
+    getCurrentRoom().addItem(item);
   }
   
   public Item findItem(String itemName) {
     // find item instance by name
-    
-    for (Item item : inventory) {
-      String name = item.getName();
-      String description = item.getDescription();
-      // find item by "name" or "description" or "name description"
-      if (itemName.equalsIgnoreCase(name) ||
-          itemName.equalsIgnoreCase(description) ||
-          itemName.equalsIgnoreCase(name + " " + description)) {
-        return item;
+    if (itemName != null) {
+      
+      for (Item item : inventory) {
+        String name = item.getName();
+        String description = item.getDescription();
+        // find item by "name" or "description" or "name description"
+        if (itemName.equalsIgnoreCase(name) ||
+            itemName.equalsIgnoreCase(description) ||
+            itemName.equalsIgnoreCase(name + " " + description)) {
+          return item;
+        }
       }
     }
     
     return null;
   }
   
-  public Weapon getEquippedWeapon() {
-    return equippedWeapon;
+  public int attack() {
+    if (getEquippedWeapon() != null) return getEquippedWeapon().attack();
+    else return 0;
   }
   
-  public int getHealthPoints() {
-    return healthPoints;
+  public void takeDamage(int damage) {
+    addHealthPoints(-damage);
   }
   
-  public void addHealthPoints(int points) {
-    if (healthPoints + points < 0) healthPoints = 0;
-    else healthPoints += points;
-  }
-  
-  public Room getCurrentRoom() {
-    return currentRoom;
-  }
-
-//    public Item takeItem(String itemName) {
-//    // removes item from player and returns it
-//    for (Item item : inventory) {
-//      if (item.getName().equalsIgnoreCase(itemName) || item.getLongName().equalsIgnoreCase(itemName)) {
-//        inventory.remove(item);
-//        return item;
-//      }
-//    }
-//
-//    return null;
-//  }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class Room {
   private ArrayList<Item> items;
+  private ArrayList<Enemy> enemies;
   private String name;
   private String description;
   
@@ -21,19 +22,41 @@ public class Room {
     setEast(null);
     setWest(null);
     items = new ArrayList<>();
+    enemies = new ArrayList<>();
+  }
+  
+  public Enemy findEnemy(String enemyName) {
+    // find enemy instance by name
+    if (enemyName != null) {
+  
+      for (Enemy enemy : enemies) {
+        String name = enemy.getName();
+        String description = enemy.getDescription();
+        // find item by "name" or "description" or "name description"
+        if (enemyName.equalsIgnoreCase(name) ||
+            enemyName.equalsIgnoreCase(description) ||
+            enemyName.equalsIgnoreCase(name + " " + description)) {
+          return enemy;
+        }
+      }
+    }
+    
+    return null;
   }
   
   public Item findItem(String itemName) {
     // find item instance by name
-    
-    for (Item item : items) {
-      String name = item.getName();
-      String description = item.getDescription();
-      // find item by "name" or "description" or "name description"
-      if (itemName.equalsIgnoreCase(name) ||
-          itemName.equalsIgnoreCase(description) ||
-          itemName.equalsIgnoreCase(name + " " + description)) {
-        return item;
+    if (itemName != null) {
+      
+      for (Item item : items) {
+        String name = item.getName();
+        String description = item.getDescription();
+        // find item by "name" or "description" or "name description"
+        if (itemName.equalsIgnoreCase(name) ||
+            itemName.equalsIgnoreCase(description) ||
+            itemName.equalsIgnoreCase(name + " " + description)) {
+          return item;
+        }
       }
     }
     
@@ -66,6 +89,16 @@ public class Room {
   
   public void removeItem(Item item) {
     items.remove(item);
+  }
+  
+  public ArrayList<Enemy> getEnemies() {
+    return enemies;
+  }
+  
+  public void addEnemy(Enemy enemy) {
+    // let enemy know what room it is in
+    enemies.add(enemy);
+    enemy.setCurrentRoom(this);
   }
   
   public void setNorth(Room north) {
@@ -107,7 +140,7 @@ public class Room {
   public Room getWest() {
     return west;
   }
-  
+
 //  public Item takeItem(String itemName) {
 //    // removes item from room and returns it
 //    for (Item item : items) {

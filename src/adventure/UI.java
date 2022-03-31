@@ -1,9 +1,12 @@
 package adventure;
 
+import adventure.enum_and_color.Action;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
-import static adventure.Action.*;
-import static adventure.Color.*;
+import static adventure.enum_and_color.Action.*;
+import static adventure.enum_and_color.Color.*;
 
 public class UI {
   Scanner in = new Scanner(System.in);
@@ -43,7 +46,7 @@ public class UI {
   
   public void printHealthPoints(Player player) {
     int healthPoints = player.getHealthPoints();
-    System.out.printf("Your health: %s [%s\u2764HP%s]\n", healthPoints, ANSI_RED, ANSI_RESET);
+    System.out.printf("- Your health [%s%s\u2764HP%s]\n", healthPoints, ANSI_RED, ANSI_RESET);
     
     if (healthPoints <= 33)
       System.out.println("- Your health is critical");
@@ -54,60 +57,107 @@ public class UI {
     else System.out.println("- You have taken no damage");
   }
   
-  public void printAttack(Player player) {
-    if (player.getEquippedWeapon() == null)
-      System.out.println("you have not equipped an weapon, you are attacking with your bare hands, you deal less damage");
+  public void printPlayerAttack(Player player, Enemy enemy, int damage) {
+    // no enemy
+    if (enemy == null) {
+      System.out.println("- there is no enemy like that to attack");
+      return;
+    }
+    // no weapon
+    if (player.getEquippedWeapon() == null) {
+      System.out.println("- Your attack failed as you have no weapon");
+      return;
+    }
+    // weapon and enemy
+    String coloredDamage = ANSI_YELLOW + "(" + damage + " DMG)" + ANSI_RESET;
+    String coloredEnemyName = ANSI_RED + enemy.getName() + ANSI_RESET;
+    String coloredEnemyHP = ANSI_YELLOW + "(" + enemy.getHealthPoints() + " HP)" + ANSI_RESET;
+    String coloredWeaponName = ANSI_PURPLE + player.getEquippedWeapon().getName() + ANSI_RESET;
+    
+    if (enemy.getHealthPoints() == 0)
+      System.out.printf("- %s is dead and dropped some loot", coloredEnemyName);
     else if (player.getEquippedWeapon().canAttack())
-      System.out.printf("you have attacked the enemy with %s, deal %s damage", player.getEquippedWeapon(), player.getEquippedWeapon().attack());
-    else
-      System.out.println("you have no ammunition left, you cant attack");
+      System.out.printf("- you dealt %s to %s %s with %s\n", coloredDamage, coloredEnemyName, coloredEnemyHP, coloredWeaponName);
+    else // player.getEquippedWeapon().canAttack() == false
+      System.out.println("- you have no ammunition left and therefore your attack failed");
+  }
+  
+  public void printEnemyAttack(Player player, Enemy enemy, int damage) {
+    String coloredDamage = ANSI_YELLOW + "(" + damage + " DMG)" + ANSI_RESET;
+    String coloredEnemyName = ANSI_RED + enemy.getName() + ANSI_RESET;
+    String coloredPlayerHP = "[" + player.getHealthPoints() + ANSI_RED + "\u2764HP" + ANSI_RESET + "]";
+    
+    if (enemy.getEquippedWeapon() != null) {
+      String coloredWeaponName = ANSI_PURPLE + enemy.getEquippedWeapon().getName() + ANSI_RESET;
+      System.out.printf("- %s attacked with %s dealing %s to player %s\n", coloredEnemyName, coloredWeaponName, coloredDamage, coloredPlayerHP);
+      
+    } else
+      System.out.printf("- %s attacked without a weapon dealing %s to player %s\n", coloredEnemyName, coloredDamage, coloredPlayerHP);
   }
   
   public void printEat(Player player, String itemName, Item item, Action action) {
+    String color;
     if (action == EAT_ITEM) {
       System.out.printf("""
-          - you ate: %s
-          - Your health is now: %s [%s\u2764HP%s]
-          """, ((Food) item), player.getHealthPoints(), ANSI_RED, ANSI_RESET);
+          - you ate - %s
+          - Your health is now [%s%s\u2764HP%s]
+          """, item, player.getHealthPoints(), ANSI_RED, ANSI_RESET);
       
     } else if (action == CANT_EAT_ITEM) {
-      System.out.printf("You cannot eat: %s, as that is not food\n", itemName);
+      // Apply item specific color
+      if (item instanceof Weapon) color = ANSI_PURPLE;
+      else if (item instanceof Food) color = ANSI_GREEN;
+      else color = ANSI_BLUE;
+      System.out.printf("- you cannot eat: %s%s%s as that is not food\n", color, itemName, ANSI_RESET);
       
     } else { // Action.CANT_FIND_ITEM
-      System.out.println("Could not find Item");
+      System.out.println("- could not find Item");
     }
   }
   
   public void printEquip(Item weapon, String itemName, Action action) {
     switch (action) {
-      case EQUIP_ITEM -> System.out.printf("you have equipped: %s\n", weapon);
-      case CANT_EQUIP_ITEM -> System.out.printf("You cannot equip %s, as that is not a weapon\n", weapon);
-      default -> System.out.printf("Could not find %s\n", itemName);
+      case EQUIP_ITEM -> System.out.printf("- you have equipped: %s\n", weapon);
+      case CANT_EQUIP_ITEM -> System.out.println("- items that are not weapons cannot be equipped");
+      default -> System.out.printf("- cant find %s\n", itemName);
     }
   }
   
-  
   public void printInventory(Player player) {
-    if (player.getInventory().isEmpty())
-      System.out.println("- Inventory is empty");
-    else System.out.printf("- Inventory: %s\n", player.getInventory());
+    StringBuilder printedInventory = new StringBuilder();
+    ArrayList<Item> inventory = player.getInventory();
+    
+    if (inventory.isEmpty())
+      System.out.println("- Inventory - empty");
+    else {
+      for (int i = 0; i < inventory.size() - 1; i++)
+        printedInventory.append(inventory.get(i) + ", ");
+      printedInventory.append(inventory.get(inventory.size() - 1));
+      
+      System.out.printf("- Inventory - %s\n", printedInventory);
+    }
     
     if (player.getEquippedWeapon() == null)
-      System.out.println("- No item equipped");
+      System.out.println("- Equipped  - none");
     else
-      System.out.printf("- Equipped weapon: %s\n", player.getEquippedWeapon());
-    
+      System.out.printf("- Equipped  - %s\n", player.getEquippedWeapon());
   }
   
   public void printUserSelect(Player player) {
     System.out.printf("""
             
-            [h] for help - current room [%s]
+            %s[h] for help - current room%s [%s]
             enter choice:\040""",
+        ANSI_YELLOW, ANSI_RESET,
         player.getCurrentRoom().getName());
   }
   
   public void printRoomDescription(Room room, String preamble) {
+    StringBuilder printItems = new StringBuilder();
+    StringBuilder printEnemies = new StringBuilder();
+    ArrayList<Item> items = room.getItems();
+    ArrayList<Enemy> enemies = room.getEnemies();
+    
     // preamble is just some introduction text
     System.out.printf("- %s [%s] \"%s\"\n",
         preamble,
@@ -116,8 +166,21 @@ public class UI {
     
     if (room.getItems().isEmpty())
       System.out.println("- no items in room");
-    else
-      System.out.printf("- the room has items - %s\n", room.getItems());
+    else {
+      // pretty print items
+      for (int i = 0; i < items.size() - 1; i++)
+        printItems.append(items.get(i) + ", ");
+      printItems.append(items.get(items.size() - 1));
+      System.out.printf("- items   - %s\n", printItems);
+    }
+    if (!room.getEnemies().isEmpty()) {
+      // pretty print enemies
+      for (int i = 0; i < enemies.size() - 1; i++)
+        printEnemies.append(enemies.get(i) + ", ");
+      printEnemies.append(enemies.get(enemies.size() - 1));
+      System.out.printf("- enemies - %s\n", printEnemies);
+    }
+    
   }
   
   public String[] getUserCommandElements() {
@@ -151,11 +214,15 @@ public class UI {
   }
   
   public void printInvalidUserInput() {
-    System.out.println("invalid user input");
+    System.out.println("- invalid user input");
   }
   
   public void printInvalidDirection() {
     System.out.println("- You cannot go that way [no room entry in that direction]");
+  }
+  
+  public void printGameOver() {
+    System.out.println("- you died");
   }
   
 }

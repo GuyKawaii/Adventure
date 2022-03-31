@@ -1,6 +1,6 @@
 package adventure;
 
-import static adventure.Color.*;
+import static adventure.enum_and_color.Color.*;
 
 public class Food extends Item{
     private int healthPoints;

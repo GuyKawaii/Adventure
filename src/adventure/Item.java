@@ -1,6 +1,6 @@
 package adventure;
 
-import static adventure.Color.*;
+import static adventure.enum_and_color.Color.*;
 
 public class Item {
     private String name;
@@ -29,7 +29,9 @@ public class Item {
 
     @Override
     public String toString() {
-        return String.format("%s%s%s: %s", ANSI_BLUE, name, ANSI_RESET, description);
+        return String.format("%s%s%s: %s",
+            ANSI_BLUE, name,
+            ANSI_RESET, description);
     }
 
 }

@@ -1,13 +1,13 @@
 package adventure;
 
-import static adventure.Color.*;
+import static adventure.enum_and_color.Color.*;
 
 public abstract class Weapon extends Item {
-  int damage;
+  private int damage;
   
   public Weapon(String name, String longName, int damage) {
     super(name, longName);
-    this.damage = damage;
+    setDamage(damage);
   }
   
   public int attack() {
@@ -19,8 +19,19 @@ public abstract class Weapon extends Item {
     return true;
   }
   
+  public int getDamage() {
+    return damage;
+  }
+  
+  public void setDamage(int damage) {
+    this.damage = damage;
+  }
+  
   @Override
   public String toString() {
-    return String.format("%s%s%s: %s %s(%s DMG)%s", ANSI_RED, getName(), ANSI_RESET, getDescription(), ANSI_YELLOW, damage, ANSI_RESET);
+    return String.format("%s%s%s: %s %s(%s DMG)%s",
+        ANSI_PURPLE, getName(),
+        ANSI_RESET, getDescription(),
+        ANSI_YELLOW, damage, ANSI_RESET);
   }
 }

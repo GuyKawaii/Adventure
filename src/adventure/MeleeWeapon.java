@@ -8,7 +8,7 @@ public class MeleeWeapon extends Weapon {
   
   @Override
   public int attack() {
-    return damage;
+    return getDamage();
   }
 
 

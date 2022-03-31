@@ -1,4 +1,4 @@
-package adventure;
+package adventure.enum_and_color;
 
 public enum Action {
   CANT_FIND_ITEM,

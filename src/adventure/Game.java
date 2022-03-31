@@ -1,6 +1,9 @@
 package adventure;
 
-import static adventure.Direction.*;
+import adventure.enum_and_color.Action;
+import adventure.enum_and_color.Direction;
+
+import static adventure.enum_and_color.Direction.*;
 
 public class Game {
   private boolean isPlaying = true;
@@ -21,7 +24,7 @@ public class Game {
   public void run() {
     String[] userCommandElements;
     String command;
-    String item;
+    String entityName;
     
     // Main game loop
     do {
@@ -30,20 +33,20 @@ public class Game {
       // split command
       userCommandElements = ui.getUserCommandElements();
       command = userCommandElements[0];
-      item = userCommandElements[1];
+      entityName = userCommandElements[1];
       
       switch (command) {
         // Movement
         case "n", "north", "go north" -> selectDirection(player, NORTH);
         case "s", "south", "go south" -> selectDirection(player, SOUTH);
-        case "w", "west", "go west" -> selectDirection(player, WEST);
         case "e", "east", "go east" -> selectDirection(player, EAST);
+        case "w", "west", "go west" -> selectDirection(player, WEST);
         // Context specific actions
-        case "t", "take" -> takeItem(player, item);
-        case "d", "drop" -> dropItem(player, item);
-        case "eq", "equip" -> equipItem(player, item);
-        case "at", "attack" -> ui.printAttack(player);
-        case "eat" -> eatItem(player, item);
+        case "t", "take" -> takeItem(player, entityName);
+        case "d", "drop" -> dropItem(player, entityName);
+        case "eq", "equip" -> equipItem(player, entityName);
+        case "at", "attack" -> attackEnemy(player, entityName);
+        case "eat" -> eatItem(player, entityName);
         // Other actions
         case "i", "inventory" -> ui.printInventory(player);
         case "hp", "health" -> ui.printHealthPoints(player);
@@ -53,7 +56,13 @@ public class Game {
         default -> ui.printInvalidUserInput();
       }
       
+      if (player.getHealthPoints() == 0) {
+        isPlaying = false;
+        ui.printGameOver();
+      }
+      
     } while (isPlaying);
+    
   }
   
   // Player movement
@@ -67,6 +76,26 @@ public class Game {
   }
   
   // Player actions
+  public void attackEnemy(Player player, String enemyName) {
+    Room currentRoom = player.getCurrentRoom();
+    // player select specific enemy or find first one
+    Enemy enemy = null;
+    if (enemyName != null) enemy = currentRoom.findEnemy(enemyName);
+    else if (!(currentRoom.getEnemies().isEmpty())) enemy = currentRoom.getEnemies().get(0);
+    
+    int damage = player.attack();
+    if (enemy != null)
+      enemy.takeDamage(damage);
+    
+    ui.printPlayerAttack(player, enemy, damage);
+    
+    if (enemy != null && enemy.getHealthPoints() != 0) {
+      damage = enemy.attack();
+      player.takeDamage(damage);
+      ui.printEnemyAttack(player, enemy, damage);
+    }
+  }
+  
   public void takeItem(Player player, String itemName) {
     Room currentRoom = player.getCurrentRoom();
     Item roomItem = currentRoom.findItem(itemName);
@@ -94,16 +123,16 @@ public class Game {
     }
   }
   
-  public void eatItem(Player player, String foodName) {
-    if (foodName == null) {
+  public void eatItem(Player player, String candidateFoodName) {
+    if (candidateFoodName == null) {
       ui.printItemNotSpecified();
     } else {
       // get reference for item in inventory or room
-      Item item = player.findItem(foodName);
-      if (item == null) item = player.getCurrentRoom().findItem(foodName);
+      Item item = player.findItem(candidateFoodName);
+      if (item == null) item = player.getCurrentRoom().findItem(candidateFoodName);
       
-      Action action = player.eat(foodName);
-      ui.printEat(player, foodName, item, action);
+      Action action = player.eat(candidateFoodName);
+      ui.printEat(player, candidateFoodName, item, action);
     }
   }
   
